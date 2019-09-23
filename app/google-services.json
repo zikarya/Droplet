@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "399460563591",
+    "firebase_url": "https://droplet-23d41.firebaseio.com",
+    "project_id": "droplet-23d41",
+    "storage_bucket": "droplet-23d41.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399460563591:android:b87f34df759381c79e5622",
+        "android_client_info": {
+          "package_name": "com.example.zik.droplet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "399460563591-a462oqcovkk0rlhctd4t4gdd0ki9fmp4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMgahSucQ-qtuYq1jMLsqH2DYwpMm-Pso"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "399460563591-a462oqcovkk0rlhctd4t4gdd0ki9fmp4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
