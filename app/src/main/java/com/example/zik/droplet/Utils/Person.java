@@ -7,6 +7,9 @@ import android.os.Parcelable;
 import androidx.annotation.Keep;
 
 @Keep public class Person implements Parcelable {
+    /////////////////////////////////////////////////////////////////////
+    //OBJECT TO STORE THE DETAILS OF ONE PERSON (USED FOR EACH PROFILE)
+    /////////////////////////////////////////////////////////////////////
     Bitmap profilePic;
     String imageurl;
     String name;
@@ -15,52 +18,42 @@ import androidx.annotation.Keep;
     String location;
     String bio;
 
+    //GET/SET NETHODS
+
     public void setProfilePic(Bitmap profilePic) {
         this.profilePic = profilePic;
     }
     public void setimageurl(String imageurl){
         this.imageurl = imageurl;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public  void setEmail(String email){this.email = email;}
-
     public void setPassword(String password){this.password = password;}
-
     public void setLocation(String location) {
         this.location = location;
     }
-
     public void setBio(String bio) {
         this.bio = bio;
-    }
-
-    public Bitmap getProfilePic() {
-        return this.profilePic;
     }
 
     public String getimageurl(){
         return this.imageurl;
     }
-
     public String getName() {
         return this.name;
     }
-
     public String getEmail(){ return this.email;}
-
     public String getPassword(){ return this.password;}
-
     public String getLocation() {
         return this.location;
     }
-
     public String getBio() {
         return this.bio;
     }
+
+
     // IMPLEMENT PARCELABLE METHODS
     @Override
     public int describeContents() {
@@ -69,7 +62,6 @@ import androidx.annotation.Keep;
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-  //      dest.writeBitmap(profilePic);
         dest.writeString(imageurl);
         dest.writeString(name);
         dest.writeString(email);
@@ -80,7 +72,6 @@ import androidx.annotation.Keep;
     }
     public Person(){}
     public Person(Parcel in) {
-//        this.profilePic = in.readBitMap();
         this.imageurl = in.readString();
         this.name = in.readString();
         this.email = in.readString();

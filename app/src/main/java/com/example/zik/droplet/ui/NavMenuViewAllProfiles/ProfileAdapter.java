@@ -1,4 +1,4 @@
-package com.example.zik.droplet.ui.AllProfiles;
+package com.example.zik.droplet.ui.NavMenuViewAllProfiles;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +13,11 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfilesViewHolder> {
-
+/////////////////////////////////////////////////////////////////////////////////////
+// ADAPTER CREATED TO SHOW EACH PROFILE IN ITS OWN VIEW, IT IS POSSIBLE TO ADD
+// ONCLICKLISTENER TO EACH PROFILE VIEW TO PERFORM FURTHER TASKS IN THE FUTURE
+// (EG SELECT USER FOR THE PURPOSE OF SENDING MESSAGE ETC
+//////////////////////////////////////////////////////////////////////////////////////
         private List<Person> profileList;
         Context context;
 
@@ -21,7 +25,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.Profiles
 
         @Override
         public ProfilesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            int layoutIdForListItem = R.layout.profile_list_item;
+            int layoutIdForListItem = R.layout.all_profile_list_item;
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             boolean attach = false;
             View view = inflater.inflate(layoutIdForListItem, parent, attach);
@@ -50,9 +54,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.Profiles
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(context, DisplaySingleProfile.class);
-                        intent.putExtra( "profile", profileList.get(getAdapterPosition()));
-                        context.startActivity(intent);
+                       // CAN SET FURTHER ACTIONS HERE TO ALLOW USER TO PERFORM TASK ON INDIVIDUAL
+                       // VIEW (EG SELECT PROFILE TO SEND A MESSAGE TO)
                     }
                 });
             }

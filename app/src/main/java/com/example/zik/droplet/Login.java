@@ -1,13 +1,11 @@
 package com.example.zik.droplet;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
 import com.example.zik.droplet.Utils.Constants;
 import com.example.zik.droplet.Utils.Person;
-import com.example.zik.droplet.ui.LoginProfile.ProfileFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -28,8 +26,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -37,6 +33,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class Login extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    //  CREATES THE VIEW FOR ONCE USER HAS BEEN AUTHENTICATED, GETS THE PROFILE DETAILS
+    //  STORED FROM ON FIREBASE DATABASE, LOADS THE PROFILE PICTURE BY GETTING FROM
+    //  FIREBASE STORAGE USING "profile.getimageurl()".
+    //  IMPLEMENTS NAVIGATION VIEW FOR THE SIDE MENU
+    ///////////////////////////////////////////////////////////////////////////////////
 
     private AppBarConfiguration mAppBarConfiguration;
     private Person loggedIn;
@@ -47,7 +50,7 @@ public class Login extends AppCompatActivity implements NavigationView.OnNavigat
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_main);
+        setContentView(R.layout.nav_user_main);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -63,13 +66,6 @@ public class Login extends AppCompatActivity implements NavigationView.OnNavigat
         NavigationUI.setupWithNavController(navigationView, navController);
         navigationView.setNavigationItemSelectedListener(this);
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
     @Override

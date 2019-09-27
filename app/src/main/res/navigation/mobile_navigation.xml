@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.zik.droplet.ui.home.HomeFragment"
+        android:name="com.example.zik.droplet.ui.NavMenuHome.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/nav_profile"
-        android:name="com.example.zik.droplet.ui.LoginProfile.ProfileFragment"
+        android:name="com.example.zik.droplet.ui.NavMenuViewProfile.ProfileFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/nav_profile_all"
-        android:name="com.example.zik.droplet.ui.AllProfiles.AllProfileFragment"
+        android:name="com.example.zik.droplet.ui.NavMenuViewAllProfiles.AllProfileFragment"
         android:label="@string/menu_profile_all"
         tools:layout="@layout/fragment_profile_all" />
     <fragment
         android:id="@+id/sign_out"
         android:name="com.example.zik.droplet.ui."
-        tools:layout="@layout/user_main"/>
+        tools:layout="@layout/nav_user_main"/>
 
 </navigation>

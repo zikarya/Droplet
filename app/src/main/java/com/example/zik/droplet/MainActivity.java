@@ -1,35 +1,39 @@
 package com.example.zik.droplet;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.zik.droplet.Utils.Constants;
+import com.example.zik.droplet.Utils.FirebaseTasks;
 import com.example.zik.droplet.Utils.Person;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity{
+import static com.example.zik.droplet.Utils.Constants.CREATE_LOGIN;
+
+public class MainActivity extends AppCompatActivity {
+    ////////////////////////////////////////////////////////////////////
+    //  SETS UP INITIAL VIEW, TWO OPTIONS
+    //  1) LOGIN -- TRIGGERS FIREBASE AUTHENTICATION AND NEW INTENT
+    //              TO LOAD THE PROFILE
+    //  2) CREATE A NEW LOGIN  -- NEW INTENT TO SETUP NEW SCREEN TO
+    //              ENTER PROFILE DETAILS
+    ////////////////////////////////////////////////////////////////////
+
+
     private FirebaseAuth firebaseAuth;
     private EditText userEmail, userPassword;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +44,8 @@ public class MainActivity extends AppCompatActivity{
         findViewById(R.id.create_login_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddNewProfile.class);
-                startActivityForResult(intent, Constants.ADD_PROFILE);
+                Intent intent = new Intent(MainActivity.this, CreateLogin.class);
+                startActivityForResult(intent, CREATE_LOGIN);
 
             }
         });
@@ -66,20 +70,20 @@ public class MainActivity extends AppCompatActivity{
             return;
         }
         firebaseAuth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        FirebaseTasks firebaseTasks = new FirebaseTasks();
-                        Intent intent = new Intent(MainActivity.this, Login.class);
-                        intent.putExtra("email", email);
-                        startActivity(intent);
-                        return;
-                    } else {
-                        Toast.makeText(MainActivity.this, "failed to login", Toast.LENGTH_LONG).show();
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseTasks firebaseTasks = new FirebaseTasks();
+                            Intent intent = new Intent(MainActivity.this, Login.class);
+                            intent.putExtra("email", email);
+                            startActivity(intent);
+                            return;
+                        } else {
+                            Toast.makeText(MainActivity.this, "failed to login", Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
-            });
+                });
     }
 
     private boolean validateForm() {
@@ -101,24 +105,15 @@ public class MainActivity extends AppCompatActivity{
         return valid;
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constants.ADD_PROFILE) {
+        if (requestCode == CREATE_LOGIN) {
             if (data != null) {
                 Person signedIn = data.getParcelableExtra(Constants.NEW_PROFILE_REQUEST);
-                FirebaseTasks.createAccount(signedIn, firebaseAuth, MainActivity.this);
-            }
-        }else if (requestCode == Constants.GET_PROFILE){
-            if (data != null){
-                Person signedIn = data.getParcelableExtra(Constants.LOGGED_IN_PROFILE_REQUEST);
-                Intent intent = new Intent();
-                intent.putExtra(Constants.LOGGED_IN_PROFILE_REQUEST, signedIn);
-                startActivity(intent);
+                FirebaseTasks.createAccount(signedIn, MainActivity.this);
+                Toast.makeText(this,"Login created. Please sign in.", Toast.LENGTH_LONG).show();
             }
         }
     }
 }
-
-

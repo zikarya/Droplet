@@ -1,37 +1,26 @@
-package com.example.zik.droplet.ui.LoginProfile;
+package com.example.zik.droplet.ui.NavMenuViewProfile;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.example.zik.droplet.AddNewProfile;
-import com.example.zik.droplet.FirebaseTasks;
+import com.example.zik.droplet.Utils.FirebaseTasks;
 import com.example.zik.droplet.R;
 import com.example.zik.droplet.Utils.Constants;
 import com.example.zik.droplet.Utils.MyLocationListener;
@@ -50,10 +39,10 @@ public class ProfileFragment extends Fragment {
 
     private ProfileViewModel profileViewModel;
     private View root;
-    private Person loggedIn;
+    private static Person loggedIn;
     private ImageButton pImage;
     private Uri filepath;
-    private TextView pName, pEmail, pBio;
+    private TextView pName, pEmail, pBio, pLocation;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -62,11 +51,16 @@ public class ProfileFragment extends Fragment {
         profileViewModel =
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
         root = inflater.inflate(R.layout.profile, container, false);
-        viewProfile(loggedIn);
+        pName = root.findViewById(R.id.profile_name);
+        pEmail = root.findViewById(R.id.profile_email);
+        pImage = root.findViewById(R.id.profile_image);
+        pBio = root.findViewById(R.id.profile_bio);
+        pLocation = root.findViewById(R.id.profile_location_text);
+        viewProfile();
         return root;
     }
 
-    public void viewProfile(final Person loggedIn) {
+    public void viewProfile() {
         StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(loggedIn.getimageurl());
         storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
@@ -81,23 +75,17 @@ public class ProfileFragment extends Fragment {
                             public void onClick(View v) {
                                 editButton.hide();
                                 editProfile();
-
                             }
                         });
-                        pName = root.findViewById(R.id.profile_name);
                         pName.setEnabled(false);
                         root.findViewById(R.id.profile_password).setVisibility(View.INVISIBLE);
-                        pEmail = root.findViewById(R.id.profile_email);
                         pEmail.setEnabled(false);
-                        pImage = root.findViewById(R.id.profile_image);
                         pImage.setEnabled(false);
-                        TextView location = root.findViewById(R.id.profile_location_text);
-                        pBio = root.findViewById(R.id.profile_bio);
                         pBio.setEnabled(false);
                         String downloadurl = task.getResult().toString();
                         pName.setText(loggedIn.getName());
                         pEmail.setText(loggedIn.getEmail());
-                        location.setText(loggedIn.getLocation());
+                        pLocation.setText(loggedIn.getLocation());
                         pBio.setText(loggedIn.getBio());
                         Glide.with(root)
                                 .load(downloadurl)
@@ -114,14 +102,20 @@ public class ProfileFragment extends Fragment {
         cancelTextview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewProfile(loggedIn);
+                viewProfile();
             }
         });
 
-        pName.setEnabled(true); pBio.setEnabled(true);pEmail.setEnabled(true);
-        final TextView pLocation = root.findViewById(R.id.profile_location_text);
+        pName.setEnabled(true); pBio.setEnabled(true);
         ImageButton locateMe = root.findViewById(R.id.locate_me);
         locateMe.setVisibility(View.VISIBLE);
+        locateMe.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                pLocation.setText(MyLocationListener.getMyLocation(getContext(), getActivity()));
+            }
+        });
 
         pImage.setEnabled(true);
         pImage.setOnClickListener(new View.OnClickListener() {
@@ -139,17 +133,37 @@ public class ProfileFragment extends Fragment {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent data = new Intent();
                 loggedIn.setName(pName.getText().toString());
                 loggedIn.setLocation(pLocation.getText().toString());
                 loggedIn.setBio(pBio.getText().toString());
-                loggedIn.setEmail(pEmail.getText().toString());
-                FirebaseTasks firebaseTasks = new FirebaseTasks();
-                loggedIn.setimageurl(firebaseTasks.uploadImageToStorage(Uri.parse(loggedIn.getimageurl()), getContext()).toString());
-                firebaseTasks.uploadProfileToDB(getContext(), loggedIn);
-                data.putExtra(Constants.NEW_PROFILE_REQUEST, loggedIn);
+                if (validateForm()) {
+                    FirebaseTasks firebaseTasks = new FirebaseTasks();
+                    firebaseTasks.updateProfileToDB(loggedIn);
+                    viewProfile();
+                }
             }
         });
+    }
+
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String email = pName.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            pName.setError("Required.");valid = false;
+        } else {pName.setError(null);}
+
+        String location = pLocation.getText().toString();
+        if (TextUtils.isEmpty(location)) {
+            pLocation.setError("Required.");valid = false;
+        } else {pLocation.setError(null);}
+
+        String bio = pBio.getText().toString();
+        if (TextUtils.isEmpty(bio)) {
+            pBio.setError("Required.");valid = false;
+        } else {pBio.setError(null);}
+
+        return valid;
     }
 
     @Override
@@ -157,7 +171,7 @@ public class ProfileFragment extends Fragment {
         Bitmap bitmap;
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == PICK_IMG_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null ) {
-            loggedIn.setimageurl((data.getData()).toString());
+            loggedIn.setimageurl(data.getData().toString());
             try {
                 filepath = Uri.parse(loggedIn.getimageurl());
                 bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filepath);

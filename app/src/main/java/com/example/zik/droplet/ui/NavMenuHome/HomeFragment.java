@@ -1,4 +1,4 @@
-package com.example.zik.droplet.ui.home;
+package com.example.zik.droplet.ui.NavMenuHome;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.zik.droplet.R;
 
 public class HomeFragment extends Fragment {
-
+//SET UP THE VIEW FOR THE HOME FRAGMENT (CURRENTLY EMPTY)
     private HomeViewModel homeViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,

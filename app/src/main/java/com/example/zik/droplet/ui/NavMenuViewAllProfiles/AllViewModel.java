@@ -1,4 +1,4 @@
-package com.example.zik.droplet.ui.AllProfiles;
+package com.example.zik.droplet.ui.NavMenuViewAllProfiles;
 
 
 import androidx.lifecycle.LiveData;
